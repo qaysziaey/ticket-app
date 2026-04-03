@@ -3,25 +3,25 @@
 
 /* ── Tailwind v4 design tokens ──────────────────────────────── */
 @theme {
-  /* Light mode colors */
-  --color-background: #ffffff;
-  --color-foreground: #0a0a0a;
+  /* Light mode colors (Slate-based professional palette) */
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
   --color-card: #ffffff;
-  --color-card-foreground: #0a0a0a;
+  --color-card-foreground: #0f172a;
   --color-popover: #ffffff;
-  --color-popover-foreground: #0a0a0a;
-  --color-primary: #0a0a0a;
+  --color-popover-foreground: #0f172a;
+  --color-primary: #0f172a;
   --color-primary-foreground: #ffffff;
-  --color-secondary: #ffffff;
-  --color-secondary-foreground: #0a0a0a;
-  --color-muted: #ffffff;
-  --color-muted-foreground: #737373;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #0f172a;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
   --color-accent: #bced09;
-  --color-accent-foreground: #0a0a0a;
+  --color-accent-foreground: #0f172a;
   --color-destructive: #ef4444;
   --color-destructive-foreground: #ffffff;
-  --color-border: transparent;
-  --color-input: #f0f0f0;
+  --color-border: #e2e8f0;
+  --color-input: #f1f5f9;
   --color-ring: #bced09;
 
   /* Dark mode surface */
@@ -40,24 +40,24 @@
 
 /* ── CSS custom properties (for hsl/hex based components) ── */
 :root {
-  --background: 0 0% 100%;
-  --foreground: 0 0% 4%;
-  --card: 0 0% 98%;
-  --card-foreground: 0 0% 4%;
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
   --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 4%;
-  --primary: 0 0% 4%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 0 0% 94%;
-  --secondary-foreground: 0 0% 4%;
-  --muted: 0 0% 94%;
-  --muted-foreground: 0 0% 45%;
+  --popover-foreground: 222 47% 11%;
+  --primary: 222 47% 11%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
   --accent: 69 97% 49%;
-  --accent-foreground: 0 0% 4%;
+  --accent-foreground: 222 47% 11%;
   --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 90%;
-  --input: 0 0% 90%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
   --ring: 69 97% 49%;
   --radius: 0.5rem;
 }

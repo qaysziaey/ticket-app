@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 export default function SignUp() {
   return (
     <div className="container mx-auto flex items-center justify-center min-h-[calc(100vh-200px)] py-12 px-4">
-      <Card className="w-full max-w-md border-0 shadow-lg bg-card">
+      <Card className="w-full max-w-md border border-border/10 bg-card">
         <CardHeader className="space-y-2 text-center pb-8">
           <CardTitle className="text-3xl font-bold tracking-tight">Create an account</CardTitle>
           <CardDescription>Enter your details to sign up for AuraTickets</CardDescription>

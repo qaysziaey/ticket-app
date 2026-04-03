@@ -6,7 +6,7 @@ import HeroSection from "@/components/domain/HeroSection"
 import { mockArtists } from "@/data/mockData"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, LayoutGrid, Music, Zap, Clapperboard, Laugh } from "lucide-react"
 
 /* ── Reusable section heading ──────────────────────────── */
 function SectionHeading({
@@ -63,7 +63,18 @@ function SectionHeading({
 }
 
 /* ── Category filter pills ─────────────────────────────── */
-const CATEGORIES = ["All", "Concert", "Festival", "Theater", "Comedy", "UK", "Germany", "Austria", "USA", "France"]
+const CATEGORIES = [
+  { name: "All", icon: LayoutGrid },
+  { name: "Concert", icon: Music },
+  { name: "Festival", icon: Zap },
+  { name: "Theater", icon: Clapperboard },
+  { name: "Comedy", icon: Laugh },
+  { name: "UK", emoji: "🇬🇧" },
+  { name: "Germany", emoji: "🇩🇪" },
+  { name: "Austria", emoji: "🇦🇹" },
+  { name: "USA", emoji: "🇺🇸" },
+  { name: "France", emoji: "🇫🇷" }
+]
 
 function CategoryPills() {
   return (
@@ -75,14 +86,16 @@ function CategoryPills() {
     >
       {CATEGORIES.map((cat, i) => (
         <motion.button
-          key={cat}
+          key={cat.name}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: i * 0.04 }}
-          className="shrink-0 px-5 py-2 rounded-full text-sm font-medium border border-border bg-card text-card-foreground transition-all hover:border-accent hover:bg-accent/10"
+          className="shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold bg-secondary text-secondary-foreground transition-all hover:bg-accent/10 hover:text-accent flex items-center gap-2 group"
           style={{ "--accent": "#bced09" } as React.CSSProperties}
         >
-          {cat}
+          {cat.icon && <cat.icon className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity" />}
+          {cat.emoji && <span className="text-base leading-none">{cat.emoji}</span>}
+          {cat.name}
         </motion.button>
       ))}
     </motion.div>
@@ -103,7 +116,7 @@ export default function Home() {
       <HeroSection />
 
       {/* ── Categories strip ── */}
-      <section className="py-6 border-b border-border bg-background">
+      <section className="py-8 bg-background">
         <div className="container mx-auto px-4">
           <CategoryPills />
         </div>

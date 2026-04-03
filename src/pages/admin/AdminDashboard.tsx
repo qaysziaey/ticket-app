@@ -34,14 +34,14 @@ export default function AdminDashboard() {
           </div>
           <Button
             onClick={handleCreate}
-            className="flex items-center gap-2 px-8 h-14 rounded-full font-black text-sm bg-accent text-accent-foreground hover:brightness-110 shadow-lg shadow-accent/20 transition-all active:scale-95"
+            className="flex items-center gap-2 px-8 h-14 rounded-full font-black text-sm bg-accent text-accent-foreground hover:brightness-110 transition-all active:scale-95"
           >
             <Plus className="w-5 h-5" /> Add New Event
           </Button>
         </div>
 
         {/* ── Events Table ── */}
-        <div className="bg-card rounded-[32px] overflow-hidden shadow-xl border border-border/50">
+        <div className="bg-card rounded-[32px] overflow-hidden border border-border">
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
@@ -59,7 +59,7 @@ export default function AdminDashboard() {
                     {/* Event name + image */}
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl overflow-hidden shrink-0 border border-border/50 shadow-sm">
+                        <div className="w-14 h-14 rounded-2xl overflow-hidden shrink-0 border border-border/50">
                           <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500" />
                         </div>
                         <div>
@@ -72,7 +72,7 @@ export default function AdminDashboard() {
                     </td>
                     {/* Category */}
                     <td className="px-8 py-6 hidden md:table-cell">
-                      <span className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-accent shadow-sm text-accent-foreground">
+                      <span className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-accent text-accent-foreground">
                         {event.category || event.type}
                       </span>
                     </td>

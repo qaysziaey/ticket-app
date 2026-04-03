@@ -27,7 +27,7 @@ export default function Profile() {
              <TabsTrigger 
                 key={tab.value} 
                 value={tab.value}
-                className="justify-start px-4 py-3 h-auto text-left hover:bg-muted data-[state=active]:bg-muted data-[state=active]:shadow-none data-[state=active]:font-semibold"
+                className="justify-start px-4 py-3 h-auto text-left hover:bg-muted data-[state=active]:bg-muted data-[state=active]:font-semibold"
              >
                 {tab.label}
              </TabsTrigger>
@@ -36,7 +36,7 @@ export default function Profile() {
 
         <div className="flex-1 max-w-3xl">
           <TabsContent value="details" className="mt-0 outline-none">
-            <Card className="border-0 shadow-sm bg-card ring-1 ring-border">
+                <Card className="border border-border/10 bg-card">
               <CardHeader>
                 <CardTitle>Profile Details</CardTitle>
                 <CardDescription>Update your personal information.</CardDescription>
@@ -64,7 +64,7 @@ export default function Profile() {
           </TabsContent>
           
           <TabsContent value="billing" className="mt-0 outline-none">
-            <Card className="border-0 shadow-sm bg-card ring-1 ring-border">
+                <Card className="border border-border/10 bg-card">
               <CardHeader>
                 <CardTitle>Billing Information</CardTitle>
                 <CardDescription>Manage your payment methods and billing address.</CardDescription>
@@ -79,7 +79,7 @@ export default function Profile() {
           {/* Other tabs can be stubs for now */}
           {tabs.slice(2).map(tab => (
              <TabsContent key={tab.value} value={tab.value} className="mt-0 outline-none">
-                <Card className="border-0 shadow-sm bg-card ring-1 ring-border">
+                    <Card className="border border-border/10 bg-card">
                   <CardHeader>
                     <CardTitle>{tab.label}</CardTitle>
                     <CardDescription>Manage settings regarding {tab.label.toLowerCase()}.</CardDescription>

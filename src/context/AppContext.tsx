@@ -21,6 +21,9 @@ interface AppState {
   clearCart: () => void;
   cartTotal: number;
   cartCount: number;
+  favorites: string[];
+  toggleFavorite: (id: string) => void;
+  isFavorite: (id: string) => boolean;
 }
 
 const AppContext = createContext<AppState | undefined>(undefined);
@@ -28,6 +31,7 @@ const AppContext = createContext<AppState | undefined>(undefined);
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [events, setEvents] = useState<AppEvent[]>([]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   /* ── Hydrate ── */
@@ -41,6 +45,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     const storedCart = localStorage.getItem("ticketapp_cart");
     if (storedCart) setCartItems(JSON.parse(storedCart));
+
+    const storedFavorites = localStorage.getItem("ticketapp_favorites");
+    if (storedFavorites) setFavorites(JSON.parse(storedFavorites));
+
     setIsLoaded(true);
   }, []);
 
@@ -53,6 +61,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (isLoaded) localStorage.setItem("ticketapp_cart", JSON.stringify(cartItems));
   }, [cartItems, isLoaded]);
 
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("ticketapp_favorites", JSON.stringify(favorites));
+  }, [favorites, isLoaded]);
+
   /* ── Event actions ── */
   const addEvent = (event: AppEvent) => setEvents((prev) => [event, ...prev]);
 
@@ -61,6 +73,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const removeEvent = (id: string) =>
     setEvents((prev) => prev.filter((e) => e.id !== id));
+
+  /* ── Favorite actions ── */
+  const toggleFavorite = (id: string) => {
+    setFavorites((prev) =>
+      prev.includes(id) ? prev.filter((fav) => fav !== id) : [...prev, id]
+    );
+  };
+
+  const isFavorite = (id: string) => favorites.includes(id);
 
   /* ── Cart actions ── */
   const addTicketToCart = (event: AppEvent, quantity = 1) => {
@@ -109,6 +130,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         clearCart,
         cartTotal,
         cartCount,
+        favorites,
+        toggleFavorite,
+        isFavorite,
       }}
     >
       {children}

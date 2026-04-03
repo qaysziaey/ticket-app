@@ -60,7 +60,7 @@ export default function ArtistDetail() {
             transition={{ duration: 0.5 }}
             className="shrink-0"
           >
-            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 shadow-2xl"
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4"
               style={{ borderColor: "#bced09" }}
             >
               <img src={artist.imageUrl} alt={artist.name} className="w-full h-full object-cover" />

@@ -16,31 +16,45 @@ export default function ArtistCard({ artist, index = 0, variant = "circle" }: Ar
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.4, delay: index * 0.07 }}
-        whileHover={{ y: -8 }}
+        whileHover={{ transition: { duration: 0.3 } }}
       >
         <Link to={`/artists/${artist.id}`} className="group block">
-          <div className="rounded-[16px] overflow-hidden bg-card border border-border/40 shadow-sm hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-500">
-            <div className="relative aspect-square overflow-hidden">
-              <img
-                src={artist.imageUrl}
-                alt={artist.name}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute bottom-4 left-4">
-                <span
-                  className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-accent text-accent-foreground shadow-lg"
-                >
-                  {artist.genre}
-                </span>
-              </div>
-            </div>
-            <div className="p-5">
-              <h3 className="font-black text-lg tracking-tight mb-1 group-hover:text-accent transition-colors">
+          <div className="relative overflow-hidden rounded-[16px] aspect-[4/5] border border-border/10 bg-card">
+            <img
+              src={artist.imageUrl}
+              alt={artist.name}
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+            />
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent" />
+
+            {/* Content Overlay */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-4">
+              <h3 className="text-white font-bold text-2xl leading-tight tracking-tight uppercase group-hover:text-accent transition-colors">
                 {artist.name}
               </h3>
-              <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground mb-4 opacity-60 transition-opacity group-hover:opacity-100">{artist.country} · {artist.followers} followers</p>
-              <p className="text-xs text-muted-foreground font-medium leading-relaxed line-clamp-2 italic">"{artist.bio}"</p>
+              
+              <div className="flex gap-6 sm:gap-8 flex-wrap">
+                <div>
+                  <p className="text-white font-bold text-sm">{artist.genre}</p>
+                  <p className="text-white/40 text-[9px] uppercase tracking-widest font-bold mt-1">Genre</p>
+                </div>
+                <div>
+                  <p className="text-white font-bold text-sm">{artist.followers}</p>
+                  <p className="text-white/40 text-[9px] uppercase tracking-widest font-bold mt-1">Followers</p>
+                </div>
+                <div>
+                  <p className="text-white font-bold text-sm">{artist.country}</p>
+                  <p className="text-white/40 text-[9px] uppercase tracking-widest font-bold mt-1">Country</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Top Tag */}
+            <div className="absolute top-4 left-4">
+              <span className="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest bg-white/10 backdrop-blur-md border border-white/10 text-white">
+                Artist
+              </span>
             </div>
           </div>
         </Link>

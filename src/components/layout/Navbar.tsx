@@ -1,10 +1,11 @@
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { ShoppingCart, User, Sun, Moon, Menu, X, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "@/context/ThemeContext"
 import { useAppContext } from "@/context/AppContext"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useRef, useEffect } from "react"
+import { cn } from "@/lib/utils"
 
 /* ── Language options ──────────────────────────────────── */
 const LANGUAGES = [
@@ -16,6 +17,7 @@ const LANGUAGES = [
 
 /* ── Language Dropdown ─────────────────────────────────── */
 function LanguageDropdown() {
+  const { theme } = useTheme();
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(LANGUAGES[0]);
   const ref = useRef<HTMLDivElement>(null);
@@ -32,7 +34,12 @@ function LanguageDropdown() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+        className={cn(
+          "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
+          theme === "light" 
+            ? "text-foreground/80 hover:text-foreground hover:bg-secondary" 
+            : "text-white/80 hover:text-white hover:bg-white/10"
+        )}
       >
         <Globe className="h-3.5 w-3.5" />
         <span className="hidden sm:inline">{selected.flag} {selected.label}</span>
@@ -46,7 +53,7 @@ function LanguageDropdown() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.96 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-44 bg-popover border border-border rounded-xl shadow-xl overflow-hidden z-50"
+            className="absolute right-0 mt-2 w-44 bg-popover border border-border rounded-xl overflow-hidden z-50"
           >
             {LANGUAGES.map((lang) => (
               <button
@@ -75,25 +82,30 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const { cartCount } = useAppContext();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   return (
     <>
-      <nav className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50 transition-colors duration-300">
+      <nav className="absolute top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent border-none">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-1 shrink-0">
-            <span className="text-xl font-black tracking-tighter" style={{ color: "hsl(var(--foreground))" }}>
+            <span className={cn(
+              "text-xl font-black tracking-tighter",
+              theme === "light" ? "text-foreground" : "text-white"
+            )}>
               AURA<span style={{ color: "#bced09" }}>.</span>
             </span>
           </Link>
 
           {/* Desktop nav links */}
-          <div className="hidden md:flex gap-6 text-sm font-medium text-muted-foreground">
-            <Link to="/events" className="hover:text-foreground transition-colors">Events</Link>
-            <Link to="/artists" className="hover:text-foreground transition-colors">Artists</Link>
-            <Link to="/admin" className="hover:text-foreground transition-colors">Admin</Link>
+          <div className={cn(
+            "hidden md:flex gap-6 text-sm font-medium",
+            theme === "light" ? "text-foreground/80" : "text-white/80"
+          )}>
+            <Link to="/events" className="hover:text-accent transition-colors">Events</Link>
+            <Link to="/artists" className="hover:text-accent transition-colors">Artists</Link>
+            <Link to="/admin" className="hover:text-accent transition-colors">Admin</Link>
           </div>
 
           {/* Spacer */}
@@ -151,7 +163,14 @@ export default function Navbar() {
               </Button>
             </Link>
             <Link to="/profile">
-              <Button variant="ghost" size="icon" className="rounded-full">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className={cn(
+                  "rounded-full",
+                  theme === "light" ? "text-foreground" : "text-white"
+                )}
+              >
                 <User className="h-4 w-4" />
               </Button>
             </Link>

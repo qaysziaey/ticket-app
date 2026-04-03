@@ -127,7 +127,7 @@ function CountryDropdown({ value, onChange }: { value: string; onChange: (v: str
             initial={{ opacity: 0, y: 8, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
-            className="absolute left-0 right-0 mt-2 bg-popover border border-border shadow-2xl rounded-2xl overflow-hidden z-[100]"
+            className="absolute left-0 right-0 mt-2 bg-popover border border-border rounded-2xl overflow-hidden z-[100]"
           >
             <div className="p-3 border-b border-border/50">
               <input
@@ -164,7 +164,7 @@ function CountryDropdown({ value, onChange }: { value: string; onChange: (v: str
 
 function Section({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-card border border-border/40 rounded-3xl p-8 space-y-8 shadow-sm">
+    <div className="bg-card border border-border/40 rounded-3xl p-8 space-y-8">
       <div className="flex items-center gap-3 border-b border-border/40 pb-4">
         <div className="w-10 h-10 rounded-2xl bg-accent/10 flex items-center justify-center">
           <Icon className="w-5 h-5 text-accent" />
@@ -294,7 +294,7 @@ export default function EventFormPage() {
             <Button 
                 onClick={handleSubmit} 
                 disabled={isSaving}
-                className="rounded-full px-12 h-12 font-black bg-accent text-accent-foreground hover:brightness-110 shadow-lg shadow-accent/20"
+                className="rounded-full px-12 h-12 font-black bg-accent text-accent-foreground hover:brightness-110"
             >
               {isSaving ? "Saving..." : (id && !duplicateId ? "Update Event" : "Create Event")}
               {!isSaving && <Save className="ml-2 w-4 h-4" />}
@@ -483,7 +483,7 @@ export default function EventFormPage() {
                      type="button" 
                      onClick={() => setForm(p => ({ ...p, isSoldOut: !p.isSoldOut }))}
                      variant={form.isSoldOut ? "destructive" : "outline"}
-                     className={cn("rounded-full px-8 gap-2 font-black text-xs uppercase tracking-widest h-12 shadow-sm", form.isSoldOut && "shadow-lg shadow-destructive/20")}
+                     className={cn("rounded-full px-8 gap-2 font-black text-xs uppercase tracking-widest h-12", form.isSoldOut && "bg-destructive border-transparent")}
                    >
                       <div className={cn("w-2 h-2 rounded-full", form.isSoldOut ? "bg-white" : "bg-accent animate-pulse")} />
                       {form.isSoldOut ? "Sold Out" : "Available"}

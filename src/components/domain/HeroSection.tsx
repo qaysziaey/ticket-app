@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Search, MapPin, Calendar } from "lucide-react"
 import { useAppContext } from "@/context/AppContext"
+import { useTheme } from "@/context/ThemeContext"
 import { AppEvent } from "@/data/mockData"
 import { Link, useNavigate } from "react-router-dom"
 import { cn } from "@/lib/utils"
@@ -49,7 +50,7 @@ function CustomDatePicker({ date, setDate }: { date: string; setDate: (d: string
             initial={{ opacity: 0, y: 12, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.95 }}
-            className="absolute top-full left-0 mt-2 bg-white rounded-3xl shadow-2xl border border-gray-100 p-6 z-[100] min-w-[320px]"
+            className="absolute top-full left-0 mt-2 bg-white rounded-3xl border border-gray-100 p-6 z-[100] min-w-[320px]"
           >
              <div className="space-y-4">
                 <div className="flex items-center justify-between border-b pb-4">
@@ -97,7 +98,7 @@ function HeroSearchBar() {
       transition={{ delay: 0.45, duration: 0.55, ease: "easeOut" }}
       className="w-full max-w-4xl mx-auto mt-10 px-4"
     >
-      <div className="rounded-[50px] flex flex-col md:flex-row overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] bg-white">
+      <div className="rounded-[50px] flex flex-col md:flex-row overflow-hidden border border-gray-100 bg-white">
         
         {/* Location */}
         <div className="flex items-center gap-3 flex-1 px-8 py-5 transition-colors hover:bg-gray-50/50">
@@ -136,7 +137,7 @@ function HeroSearchBar() {
         <div className="p-2 flex shrink-0">
           <button
             onClick={handleSearch}
-            className="px-10 rounded-full font-medium text-sm tracking-widest uppercase transition-all hover:brightness-110 active:scale-95 flex items-center justify-center min-h-[56px] shadow-lg shadow-accent/20"
+            className="px-10 rounded-full font-medium text-sm tracking-widest uppercase transition-all hover:brightness-110 active:scale-95 flex items-center justify-center min-h-[56px]"
             style={{ backgroundColor: "#bced09", color: "#100c08" }}
           >
             Search
@@ -149,7 +150,10 @@ function HeroSearchBar() {
 
 /* ── Slide event info overlay ──────────────────────────── */
 function SlideInfoCard({ event }: { event: AppEvent }) {
+  const { theme } = useTheme();
   const eventDate = new Date(event.date);
+  const isLight = theme === "light";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -161,24 +165,37 @@ function SlideInfoCard({ event }: { event: AppEvent }) {
       <div className="max-w-2xl">
         <div className="flex gap-2 mb-3 flex-wrap">
           {event.tags.slice(0, 2).map((tag) => (
-            <span key={tag} className="px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide bg-white/10 backdrop-blur-md border border-white/20 text-white">
+            <span key={tag} className={cn(
+              "px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide border",
+              isLight 
+                ? "bg-secondary text-foreground border-border" 
+                : "bg-white/10 backdrop-blur-md border-white/20 text-white"
+            )}>
               {tag}
             </span>
           ))}
         </div>
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium text-white leading-tight mb-3 tracking-tight">{event.title}</h2>
-        <div className="flex flex-wrap gap-4 text-white/70 text-sm mb-5 font-medium">
+        <h2 className={cn(
+          "text-2xl md:text-3xl lg:text-4xl font-medium leading-tight mb-3 tracking-tight",
+          isLight ? "text-foreground" : "text-white"
+        )}>
+          {event.title}
+        </h2>
+        <div className={cn(
+          "flex flex-wrap gap-4 text-sm mb-5 font-medium",
+          isLight ? "text-muted-foreground" : "text-white/70"
+        )}>
           <span className="flex items-center gap-1.5 opacity-80">
             <Calendar className="w-3.5 h-3.5" />
             {eventDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
           </span>
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1.5 opacity-80">
             <MapPin className="w-3.5 h-3.5" />
             {event.location}, {event.country}
           </span>
         </div>
         <Link to={`/events/${event.id}`}>
-          <button className="rounded-full px-8 py-3.5 font-medium text-xs uppercase tracking-widest transition-all hover:brightness-110 active:scale-95 shadow-lg shadow-accent/10"
+          <button className="rounded-full px-8 py-3.5 font-medium text-xs uppercase tracking-widest transition-all hover:brightness-110 active:scale-95"
             style={{ backgroundColor: "#bced09", color: "#100c08" }}>
             Get Tickets — from ${event.price}
           </button>
@@ -191,10 +208,12 @@ function SlideInfoCard({ event }: { event: AppEvent }) {
 /* ── Main Hero ─────────────────────────────────────────── */
 export default function HeroSection() {
   const { events } = useAppContext();
+  const { theme } = useTheme();
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
 
+  const isLight = theme === "light";
   const heroEvents = events.slice(0, 5);
 
   const goTo = useCallback((index: number, dir: number) => {
@@ -236,11 +255,13 @@ export default function HeroSection() {
           className="absolute inset-0"
         >
           <img src={activeEvent.imageUrl} alt={activeEvent.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{
-            background: "linear-gradient(to top, #100c08 0%, rgba(16,12,8,0.65) 40%, rgba(16,12,8,0.15) 60%, rgba(16,12,8,0.5) 100%)"
-          }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         </motion.div>
       </AnimatePresence>
+      
+      {/* Subtle light overlay for dark text in light mode */}
+      {isLight && <div className="absolute inset-0 bg-white/20 pointer-events-none" />}
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center pt-16 md:pt-20 px-4" style={{ minHeight: "88vh" }}>
@@ -254,11 +275,17 @@ export default function HeroSection() {
             Live experiences, curated for you
           </p>
           {/* Font weight 500 (medium) as requested */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-medium text-white tracking-tight whitespace-nowrap">
+          <h1 className={cn(
+            "text-4xl md:text-6xl lg:text-7xl font-medium tracking-tight whitespace-nowrap",
+            isLight ? "text-foreground" : "text-white"
+          )}>
             Find Your Next&nbsp;
             <span className="font-black" style={{ color: "#bced09" }}>Experience.</span>
           </h1>
-          <p className="text-white/50 text-base md:text-lg mt-3 font-light">
+          <p className={cn(
+            "text-base md:text-lg mt-3 font-light",
+            isLight ? "text-muted-foreground" : "text-white/50"
+          )}>
             Concerts · Festivals · Shows · Theater — all in one place.
           </p>
         </motion.div>

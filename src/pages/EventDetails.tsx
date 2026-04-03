@@ -35,8 +35,8 @@ export default function EventDetails() {
       <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-12">
         {/* Left Col - Image */}
         <div className="lg:w-2/3">
-           <div className="relative aspect-video rounded-xl overflow-hidden mb-8 shadow-2xl">
-              <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover" />
+          <div className="relative aspect-video rounded-xl overflow-hidden mb-8 border border-border/10">
+             <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover" />
               <div className="absolute top-4 left-4 flex gap-2">
                  {event.tags.map(tag => (
                    <Badge key={tag} className="bg-background/80 backdrop-blur text-foreground hover:bg-background/90 text-sm">
@@ -70,7 +70,7 @@ export default function EventDetails() {
 
         {/* Right Col - Info & CTA */}
         <div className="lg:w-1/3">
-          <div className="sticky top-24 bg-card border border-border/50 rounded-2xl p-8 shadow-xl">
+          <div className="sticky top-24 bg-card border border-border rounded-2xl p-8">
              <div className="mb-8 pb-8 border-b border-border/50 space-y-5 text-sm">
                 <div className="flex items-start gap-4">
                    <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center shrink-0">
