@@ -5,7 +5,7 @@ export default function AllEvents() {
   const { events } = useAppContext()
 
   return (
-    <div className="container mx-auto px-4 py-12 flex-1">
+    <div className="container mx-auto px-4 pt-24 pb-12 flex-1">
       <div className="mb-10">
         <h1 className="text-4xl font-bold tracking-tight mb-4">All Events</h1>
         <p className="text-muted-foreground text-lg">Explore all upcoming events globally.</p>

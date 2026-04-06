@@ -69,15 +69,15 @@ export default function EventCard({ event, index = 0, variant = "default" }: Eve
              <div className="flex gap-4 sm:gap-6 flex-wrap opacity-80">
                 <div className="flex items-center gap-2">
                   <p className="text-white/40 text-[9px] uppercase tracking-widest font-bold">Date</p>
-                  <p className="text-white font-bold text-sm sm:text-base">{formattedDate}</p>
+                  <p className="text-accent font-bold text-sm sm:text-base">{formattedDate}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <p className="text-white/40 text-[9px] uppercase tracking-widest font-bold">Venue</p>
-                  <p className="text-white font-bold text-sm sm:text-base">{event.location}</p>
+                  <p className="text-accent font-bold text-sm sm:text-base">{event.location}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <p className="text-white/40 text-[9px] uppercase tracking-widest font-bold">Type</p>
-                  <p className="text-white font-bold text-sm sm:text-base">{event.type}</p>
+                  <p className="text-accent font-bold text-sm sm:text-base">{event.type}</p>
                 </div>
               </div>
 
@@ -153,15 +153,15 @@ export default function EventCard({ event, index = 0, variant = "default" }: Eve
           <div className="flex flex-col gap-5 mt-auto">
              <div className="flex flex-wrap gap-x-6 gap-y-3 opacity-90">
                 <div>
-                  <p className="font-bold text-xs sm:text-sm">{formattedDate}</p>
+                  <p className="font-bold text-xs sm:text-sm text-accent">{formattedDate}</p>
                   <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold mt-0.5">Date</p>
                 </div>
                 <div>
-                  <p className="font-bold text-xs sm:text-sm truncate max-w-[80px] sm:max-w-none">{event.location}</p>
+                  <p className="font-bold text-xs sm:text-sm text-accent truncate max-w-[80px] sm:max-w-none">{event.location}</p>
                   <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold mt-0.5">Venue</p>
                 </div>
                 <div>
-                  <p className="font-bold text-xs sm:text-sm">{event.type}</p>
+                  <p className="font-bold text-xs sm:text-sm text-accent">{event.type}</p>
                   <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold mt-0.5">Type</p>
                 </div>
              </div>
