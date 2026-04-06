@@ -102,7 +102,7 @@ export default function EventCard({ event, index = 0, variant = "default" }: Eve
       whileHover={{ transition: { duration: 0.3 } }}
     >
       <div
-        className="group relative flex flex-col h-full bg-transparent hover:bg-white dark:hover:bg-white/5 rounded-[16px] overflow-hidden transition-all duration-500 p-[6px]"
+        className="group relative flex flex-col h-full bg-transparent hover:bg-accent rounded-[16px] overflow-hidden transition-colors duration-500 p-[6px]"
       >
         {/* Image portion */}
         <div className="relative aspect-[16/10] overflow-hidden rounded-[10px]">
@@ -130,21 +130,21 @@ export default function EventCard({ event, index = 0, variant = "default" }: Eve
         <div className="p-4 flex flex-col flex-1">
           <div className="flex-1">
              <div className="flex justify-between items-start gap-4 mb-2.5">
-                <h3 className="font-bold text-lg sm:text-xl tracking-tight leading-tight uppercase group-hover:text-accent transition-colors">
+                <h3 className="font-bold text-lg sm:text-xl tracking-tight leading-tight uppercase group-hover:text-accent-foreground transition-colors">
                   {event.title}
                 </h3>
                 <button 
                   onClick={(e) => { e.preventDefault(); toggleFavorite(event.id); }}
                   className={cn(
                     "w-8.5 h-8.5 shrink-0 rounded-full flex items-center justify-center transition-all active:scale-95",
-                    isFav ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-secondary"
+                    isFav ? "bg-accent text-accent-foreground shadow-sm group-hover:bg-black group-hover:text-accent" : "text-muted-foreground hover:bg-secondary group-hover:text-accent-foreground group-hover:hover:bg-black/10"
                   )}
                 >
                   <Heart className={cn("w-4 h-4", isFav && "fill-current")} />
                 </button>
              </div>
              
-             <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 mb-6 opacity-80">
+             <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 mb-6 opacity-80 group-hover:text-accent-foreground/80 transition-colors">
                 {event.description || "Join us for an unforgettable experience featuring world-class performance and energy."}
              </p>
           </div>
@@ -153,22 +153,22 @@ export default function EventCard({ event, index = 0, variant = "default" }: Eve
           <div className="flex flex-col gap-5 mt-auto">
              <div className="flex flex-wrap gap-x-6 gap-y-3 opacity-90">
                 <div>
-                  <p className="font-bold text-xs sm:text-sm text-accent">{formattedDate}</p>
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold mt-0.5">Date</p>
+                  <p className="font-bold text-xs sm:text-sm text-accent group-hover:text-accent-foreground transition-colors">{formattedDate}</p>
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold mt-0.5 group-hover:text-accent-foreground/60 transition-colors">Date</p>
                 </div>
                 <div>
-                  <p className="font-bold text-xs sm:text-sm text-accent truncate max-w-[80px] sm:max-w-none">{event.location}</p>
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold mt-0.5">Venue</p>
+                  <p className="font-bold text-xs sm:text-sm text-accent truncate max-w-[80px] sm:max-w-none group-hover:text-accent-foreground transition-colors">{event.location}</p>
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold mt-0.5 group-hover:text-accent-foreground/60 transition-colors">Venue</p>
                 </div>
                 <div>
-                  <p className="font-bold text-xs sm:text-sm text-accent">{event.type}</p>
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold mt-0.5">Type</p>
+                  <p className="font-bold text-xs sm:text-sm text-accent group-hover:text-accent-foreground transition-colors">{event.type}</p>
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold mt-0.5 group-hover:text-accent-foreground/60 transition-colors">Type</p>
                 </div>
              </div>
 
               <div className="flex items-center gap-2 shrink-0">
                 <Link to={`/events/${event.id}`} className="flex-1 sm:flex-initial">
-                  <button className="w-full px-4 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest bg-secondary text-secondary-foreground hover:bg-accent/10 hover:text-accent transition-all duration-300 whitespace-nowrap">
+                  <button className="w-full px-4 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest bg-secondary text-secondary-foreground hover:bg-secondary/80 group-hover:bg-black/10 group-hover:text-accent-foreground group-hover:hover:bg-black/20 transition-all duration-300 whitespace-nowrap">
                     Details
                   </button>
                 </Link>
@@ -178,8 +178,8 @@ export default function EventCard({ event, index = 0, variant = "default" }: Eve
                     className={cn(
                       "w-full px-5 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all duration-300 active:scale-95 whitespace-nowrap flex items-center justify-center gap-1.5",
                       event.isSoldOut 
-                        ? "bg-muted text-muted-foreground cursor-not-allowed" 
-                        : "bg-black text-white dark:bg-accent dark:text-accent-foreground hover:bg-accent/90"
+                        ? "bg-muted text-muted-foreground cursor-not-allowed group-hover:bg-black/10 group-hover:text-accent-foreground/50" 
+                        : "bg-black text-white dark:bg-accent dark:text-accent-foreground hover:bg-accent/90 group-hover:bg-accent-foreground group-hover:text-accent group-hover:hover:bg-black/80"
                     )}
                   >
                      <Ticket className="w-3 h-3" /> Book Now
