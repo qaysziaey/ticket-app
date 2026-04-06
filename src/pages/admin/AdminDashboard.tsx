@@ -21,14 +21,14 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="flex-1 relative bg-background p-8 lg:p-12">
+    <div className="flex-1 relative bg-background py-8 lg:py-12">
         {/* ── Header ── */}
-        <div className="flex flex-wrap justify-between items-end gap-6 mb-12">
+        <div className="flex flex-wrap justify-between items-end gap-6 mb-12 px-8 lg:px-12">
           <div>
             <p className="text-xs font-black tracking-widest uppercase mb-2 text-accent">
               Management Portal
             </p>
-            <h1 className="text-5xl font-black tracking-tight">Admin Dashboard</h1>
+            <h1 className="text-3xl font-medium tracking-tight">Admin Dashboard</h1>
             <p className="text-muted-foreground mt-2 font-medium">Monitoring {events.length} active events across the platform</p>
           </div>
           <Button
@@ -40,11 +40,11 @@ export default function AdminDashboard() {
         </div>
 
         {/* ── Events Table ── */}
-        <div className="bg-card rounded-[32px] overflow-hidden border border-border">
+        <div className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="bg-secondary/30">
+                <tr className="bg-transparent border-b border-border/30">
                   <th className="text-left px-8 py-6 text-xs font-black uppercase tracking-widest text-muted-foreground/60">Event Info</th>
                   <th className="text-left px-8 py-6 text-xs font-black uppercase tracking-widest text-muted-foreground/60 hidden md:table-cell">Category</th>
                   <th className="text-left px-8 py-6 text-xs font-black uppercase tracking-widest text-muted-foreground/60 hidden lg:table-cell">Date</th>
@@ -56,17 +56,18 @@ export default function AdminDashboard() {
                 {events.map((event) => (
                   <tr key={event.id} className="hover:bg-accent/[0.02] transition-colors group">
                     {/* Event name + image */}
-                    <td className="px-8 py-6">
-                      <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl overflow-hidden shrink-0 border border-border/50">
-                          <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500" />
-                        </div>
-                        <div>
-                          <p className="font-black text-base tracking-tight leading-tight mb-1">{event.title}</p>
-                          {event.organizerName && (
-                            <p className="text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors uppercase tracking-tight">{event.organizerName}</p>
-                          )}
-                        </div>
+                    <td className="px-8 py-6 relative">
+                      <div 
+                        className="absolute inset-y-0 left-0 w-56 z-0 pointer-events-none" 
+                        style={{ WebkitMaskImage: 'linear-gradient(to right, black 20%, transparent 90%)', maskImage: 'linear-gradient(to right, black 20%, transparent 90%)' }}
+                      >
+                         <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
+                      </div>
+                      <div className="relative z-10 pl-24">
+                        <p className="font-black text-base tracking-tight leading-tight mb-1">{event.title}</p>
+                        {event.organizerName && (
+                          <p className="text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors uppercase tracking-tight">{event.organizerName}</p>
+                        )}
                       </div>
                     </td>
                     {/* Category */}
