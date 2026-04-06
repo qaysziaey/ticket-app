@@ -10,6 +10,7 @@ import AllEvents from "@/pages/AllEvents"
 import EventDetails from "@/pages/EventDetails"
 import Profile from "@/pages/Profile"
 import AdminDashboard from "@/pages/admin/AdminDashboard"
+import AdminTickets from "@/pages/admin/AdminTickets"
 import EventFormPage from "@/pages/admin/EventFormPage"
 import SignIn from "@/pages/auth/SignIn"
 import SignUp from "@/pages/auth/SignUp"
@@ -39,6 +40,7 @@ function App() {
             {/* Admin Dashboard Routes */}
             <Route element={<AdminLayout />}>
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/tickets" element={<AdminTickets />} />
               <Route path="/admin/events/new" element={<EventFormPage />} />
               <Route path="/admin/events/edit/:id" element={<EventFormPage />} />
             </Route>

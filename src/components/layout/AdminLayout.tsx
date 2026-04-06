@@ -16,7 +16,7 @@ export default function AdminLayout() {
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-border bg-card shrink-0 flex-col hidden md:flex h-full z-20 shadow-sm relative">
+      <aside className="w-64 bg-card shrink-0 flex-col hidden md:flex h-full z-20 shadow-sm relative">
         <div className="p-6 pb-2">
           <Link to="/" className="flex items-center gap-2 mb-8 group">
             <span className={cn(
