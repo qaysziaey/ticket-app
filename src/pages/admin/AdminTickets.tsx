@@ -1,7 +1,7 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef } from "react"
 import { useAppContext } from "@/context/AppContext"
 import { Button } from "@/components/ui/button"
-import { Search, Filter, Eye, Edit2, Trash2, X, Ticket } from "lucide-react"
+import { Search, Filter, Eye, Edit2, Trash2, X, Ticket, ChevronLeft, ChevronRight } from "lucide-react"
 
 type TicketStatus = "Paid" | "Pending" | "Canceled"
 
@@ -52,6 +52,13 @@ export default function AdminTickets() {
   const [selectedStatus, setSelectedStatus] = useState<"all" | TicketStatus>("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [viewingOrder, setViewingOrder] = useState<MockOrder | null>(null)
+  const carouselRef = useRef<HTMLDivElement>(null)
+
+  const scrollCarousel = (dir: "left" | "right") => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollBy({ left: dir === "right" ? 240 : -240, behavior: "smooth" })
+    }
+  }
 
   const filteredOrders = useMemo(() => {
     return orders.filter(order => {
@@ -72,20 +79,40 @@ export default function AdminTickets() {
   }
 
   return (
-    <div className="flex-1 overflow-auto bg-background py-8 lg:py-10 flex flex-col gap-8">
+    <div className="flex-1 overflow-auto bg-background">
+      <div className="px-8 lg:px-12 py-8 lg:py-10 flex flex-col gap-8">
 
       {/* Header */}
-      <div className="px-8 lg:px-12">
+      <div>
         <p className="text-xs font-black tracking-widest uppercase mb-1.5 text-accent">Ticket Manifest</p>
         <h1 className="text-3xl font-medium tracking-tight">Orders &amp; Sales</h1>
         <p className="text-muted-foreground text-sm mt-1">{filteredOrders.length} tickets displayed</p>
       </div>
 
-      {/* Event Slider */}
-      <div className="px-8 lg:px-12">
-        <p className="text-[11px] font-black text-muted-foreground uppercase tracking-widest mb-4">Filter by Event</p>
-        <div className="flex gap-3 overflow-x-auto pb-3 [&::-webkit-scrollbar]:hidden">
+      {/* Event Carousel */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-[11px] font-black text-muted-foreground uppercase tracking-widest">Filter by Event</p>
+          <div className="flex gap-1">
+            <button
+              onClick={() => scrollCarousel("left")}
+              className="w-8 h-8 rounded-xl border border-border bg-card hover:bg-secondary flex items-center justify-center transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4 text-muted-foreground" />
+            </button>
+            <button
+              onClick={() => scrollCarousel("right")}
+              className="w-8 h-8 rounded-xl border border-border bg-card hover:bg-secondary flex items-center justify-center transition-colors"
+            >
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </button>
+          </div>
+        </div>
 
+        <div
+          ref={carouselRef}
+          className="flex gap-3 overflow-x-auto pb-3 [&::-webkit-scrollbar]:hidden scroll-smooth"
+        >
           <button
             onClick={() => setSelectedEventId("all")}
             className={`shrink-0 h-36 w-36 rounded-[8px] flex flex-col items-center justify-center gap-2.5 border-2 font-bold text-xs transition-all duration-200 ${
@@ -124,7 +151,7 @@ export default function AdminTickets() {
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="flex flex-col gap-3 px-8 lg:px-12">
+      <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
@@ -162,7 +189,7 @@ export default function AdminTickets() {
         </div>
 
         {/* Status label filter pills */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap pt-1">
           <span className="text-[11px] font-black text-muted-foreground uppercase tracking-widest mr-1">Status</span>
           {([
             { key: "all",      label: "All",      dot: "bg-muted-foreground",  pill: "bg-secondary text-foreground" },
@@ -175,7 +202,7 @@ export default function AdminTickets() {
               onClick={() => setSelectedStatus(s.key)}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-150 ${
                 selectedStatus === s.key
-                  ? `${s.pill} border-current scale-105 shadow-sm`
+                  ? `${s.pill} border-current`
                   : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground"
               }`}
             >
@@ -185,7 +212,13 @@ export default function AdminTickets() {
           ))}
         </div>
       </div>
-      {/* Table */}
+
+      </div>{/* end padded wrapper */}
+
+      {/* Divider before table */}
+      <div className="border-t border-border/50" />
+
+      {/* Table — full width */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[700px]">
           <thead className="border-b border-border">
@@ -193,7 +226,7 @@ export default function AdminTickets() {
               {["#", "Ticket No.", "Customer", "Event", "Status", "Date", "Actions"].map((h, i) => (
                 <th
                   key={h}
-                  className={`px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground ${i === 6 ? "text-right" : "text-left"} ${i === 0 ? "w-12" : ""}`}
+                  className={`px-8 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground ${i === 6 ? "text-right" : "text-left"} ${i === 0 ? "w-12" : ""}`}
                 >
                   {h}
                 </th>
@@ -206,18 +239,18 @@ export default function AdminTickets() {
                 key={order.id}
                 className="border-b border-border/40 last:border-0 transition-all duration-150 group relative hover:bg-accent/5 hover:border-accent/20"
               >
-                <td className="px-6 py-4 text-xs text-muted-foreground font-bold">{i + 1}</td>
-                <td className="px-6 py-4">
+                <td className="px-8 py-4 text-xs text-muted-foreground font-bold">{i + 1}</td>
+                <td className="px-8 py-4">
                   <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-accent/10 text-accent text-xs font-black group-hover:bg-accent group-hover:text-black transition-colors">
                     {order.ticketNumber}
                   </span>
                 </td>
-                <td className="px-6 py-4 font-semibold text-foreground">{order.username}</td>
-                <td className="px-6 py-4">
+                <td className="px-8 py-4 font-semibold text-foreground">{order.username}</td>
+                <td className="px-8 py-4">
                   <p className="font-semibold text-foreground leading-tight line-clamp-1">{order.eventName}</p>
                   <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider mt-0.5">{order.tier}</p>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-8 py-4">
                   <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-black ${
                     order.status === "Paid"
                       ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
@@ -231,8 +264,8 @@ export default function AdminTickets() {
                     {order.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-muted-foreground">{order.date}</td>
-                <td className="px-6 py-4">
+                <td className="px-8 py-4 text-muted-foreground">{order.date}</td>
+                <td className="px-8 py-4">
                   <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
                     <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:bg-accent hover:text-black" onClick={() => setViewingOrder(order)} title="View">
                       <Eye className="w-3.5 h-3.5" />
