@@ -1,5 +1,5 @@
 import { AppEvent } from "@/data/mockData"
-import { Heart } from "lucide-react"
+import { Heart, Ticket } from "lucide-react"
 import { Link } from "react-router-dom"
 import { motion } from "framer-motion"
 import { useAppContext } from "@/context/AppContext"
@@ -82,8 +82,8 @@ export default function EventCard({ event, index = 0, variant = "default" }: Eve
               </div>
 
               <Link to={`/events/${event.id}`} className="w-full sm:w-auto shrink-0">
-                <button className="w-full sm:px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white text-black hover:bg-accent hover:text-accent-foreground transition-all duration-300 whitespace-nowrap">
-                  Book Now
+                <button className="w-full sm:px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white text-black hover:bg-accent hover:text-accent-foreground transition-all duration-300 whitespace-nowrap flex items-center justify-center gap-2">
+                  <Ticket className="w-3.5 h-3.5" /> Book Now
                 </button>
               </Link>
             </div>
@@ -102,7 +102,7 @@ export default function EventCard({ event, index = 0, variant = "default" }: Eve
       whileHover={{ transition: { duration: 0.3 } }}
     >
       <div
-        className="group relative flex flex-col h-full bg-white dark:bg-card rounded-[16px] overflow-hidden transition-all duration-500 p-[6px]"
+        className="group relative flex flex-col h-full bg-transparent hover:bg-white dark:hover:bg-white/5 rounded-[16px] overflow-hidden transition-all duration-500 p-[6px]"
       >
         {/* Image portion */}
         <div className="relative aspect-[16/10] overflow-hidden rounded-[10px]">
@@ -176,13 +176,13 @@ export default function EventCard({ event, index = 0, variant = "default" }: Eve
                   <button 
                     disabled={event.isSoldOut}
                     className={cn(
-                      "w-full px-5 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all duration-300 active:scale-95 whitespace-nowrap",
+                      "w-full px-5 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all duration-300 active:scale-95 whitespace-nowrap flex items-center justify-center gap-1.5",
                       event.isSoldOut 
                         ? "bg-muted text-muted-foreground cursor-not-allowed" 
                         : "bg-black text-white dark:bg-accent dark:text-accent-foreground hover:bg-accent/90"
                     )}
                   >
-                     Book Now
+                     <Ticket className="w-3 h-3" /> Book Now
                   </button>
                 </Link>
               </div>
