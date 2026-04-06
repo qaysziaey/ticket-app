@@ -1,180 +1,267 @@
+import { useState, useMemo } from "react"
 import { useAppContext } from "@/context/AppContext"
-import { DollarSign, Ticket, Activity, TrendingUp } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Search, Filter, Eye, Edit2, Trash2, X, Ticket } from "lucide-react"
+
+type MockOrder = {
+  id: string
+  ticketNumber: string
+  username: string
+  eventId: string
+  eventName: string
+  tier: string
+  date: string
+  price: number
+}
 
 export default function AdminTickets() {
   const { events } = useAppContext()
 
-  // Calculate global metrics
-  let totalRevenue = 0
-  let totalSold = 0
-  let totalCapacity = 0
+  const mockOrders: MockOrder[] = useMemo(() => {
+    const list: MockOrder[] = []
+    const firstNames = ["James", "Sarah", "Michael", "Emma", "David", "Jessica", "Farhad", "Michale"]
+    const lastNames = ["Smith", "Johnson", "Williams", "Fan", "Darya", "Brown", "Jones", "Miller"]
 
-  const eventsWithTickets = events.map(event => {
-    let eventRevenue = 0
-    let eventSold = 0
-    let eventCapacity = 0
+    events.forEach(event => {
+      const numTickets = Math.floor(Math.random() * 10) + 5
+      for (let i = 0; i < numTickets; i++) {
+        const tier = event.ticketTiers?.[Math.floor(Math.random() * (event.ticketTiers?.length ?? 1))] ?? { name: "General Admission", price: event.price }
+        list.push({
+          id: `ord-${Math.random().toString(36).substr(2, 6)}`,
+          ticketNumber: `#FR${Math.floor(10000 + Math.random() * 90000)}`,
+          username: `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`,
+          eventId: event.id,
+          eventName: event.title,
+          tier: tier.name,
+          price: tier.price,
+          date: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toLocaleDateString(),
+        })
+      }
+    })
 
-    if (event.ticketTiers) {
-      event.ticketTiers.forEach(tier => {
-        eventRevenue += tier.price * tier.soldQuantity
-        eventSold += tier.soldQuantity
-        eventCapacity += tier.totalQuantity
-      })
+    return list.sort(() => 0.5 - Math.random())
+  }, [events])
+
+  const [orders, setOrders] = useState<MockOrder[]>(mockOrders)
+  const [selectedEventId, setSelectedEventId] = useState("all")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [viewingOrder, setViewingOrder] = useState<MockOrder | null>(null)
+
+  const filteredOrders = useMemo(() => {
+    return orders.filter(order => {
+      const matchEvent = selectedEventId === "all" || order.eventId === selectedEventId
+      const q = searchQuery.toLowerCase()
+      const matchSearch = order.username.toLowerCase().includes(q)
+        || order.ticketNumber.toLowerCase().includes(q)
+        || order.eventName.toLowerCase().includes(q)
+      return matchEvent && matchSearch
+    })
+  }, [orders, selectedEventId, searchQuery])
+
+  const handleDelete = (id: string) => {
+    if (confirm("Delete this ticket order?")) {
+      setOrders(prev => prev.filter(o => o.id !== id))
     }
-
-    totalRevenue += eventRevenue
-    totalSold += eventSold
-    totalCapacity += eventCapacity
-
-    return {
-      ...event,
-      metrics: { eventRevenue, eventSold, eventCapacity },
-      fillRate: eventCapacity > 0 ? (eventSold / eventCapacity) * 100 : 0
-    }
-  })
-
-  // Sort events by revenue
-  eventsWithTickets.sort((a, b) => b.metrics.eventRevenue - a.metrics.eventRevenue)
-
-  const overallFillRate = totalCapacity > 0 ? (totalSold / totalCapacity) * 100 : 0
+  }
 
   return (
-    <div className="flex-1 overflow-auto bg-background p-8 lg:p-12">
-      <div className="mb-12">
-        <p className="text-xs font-black tracking-widest uppercase mb-2 text-accent">Ticketing Hub</p>
-        <h1 className="text-3xl font-medium tracking-tight">Ticket Sales Insight</h1>
-        <p className="text-muted-foreground mt-2 font-medium">Real-time overview of seating capacity and revenue.</p>
+    <div className="flex-1 overflow-auto bg-background py-8 lg:py-10 flex flex-col gap-8">
+
+      {/* Header */}
+      <div className="px-8 lg:px-12">
+        <p className="text-xs font-black tracking-widest uppercase mb-1.5 text-accent">Ticket Manifest</p>
+        <h1 className="text-3xl font-medium tracking-tight">Orders &amp; Sales</h1>
+        <p className="text-muted-foreground text-sm mt-1">{filteredOrders.length} tickets displayed</p>
       </div>
 
-      {/* ── Metric Cards ── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between">
-          <div className="flex items-start justify-between mb-8">
-            <div className="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-accent" />
-            </div>
-            <span className="flex items-center gap-1 text-emerald-500 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded-full">
-              <TrendingUp className="w-3 h-3" /> +14.5%
-            </span>
-          </div>
-          <div>
-            <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-1">Gross Revenue</p>
-            <p className="text-4xl font-black tracking-tighter">${totalRevenue.toLocaleString()}</p>
-          </div>
-        </div>
+      {/* Event Slider */}
+      <div className="px-8 lg:px-12">
+        <p className="text-[11px] font-black text-muted-foreground uppercase tracking-widest mb-4">Filter by Event</p>
+        <div className="flex gap-3 overflow-x-auto pb-3 [&::-webkit-scrollbar]:hidden">
 
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between">
-          <div className="flex items-start justify-between mb-8">
-            <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center">
-              <Ticket className="w-6 h-6 text-foreground" />
-            </div>
-          </div>
-          <div>
-            <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-1">Tickets Sold</p>
-            <p className="text-4xl font-black tracking-tighter">{totalSold.toLocaleString()} <span className="text-xl text-muted-foreground font-medium">/ {totalCapacity.toLocaleString()}</span></p>
-          </div>
-        </div>
+          <button
+            onClick={() => setSelectedEventId("all")}
+            className={`shrink-0 h-28 w-28 rounded-2xl flex flex-col items-center justify-center gap-2.5 border-2 font-bold text-xs transition-all duration-200 ${
+              selectedEventId === "all"
+                ? "bg-accent text-black border-accent shadow-lg shadow-accent/30 scale-105"
+                : "bg-card border-border text-muted-foreground hover:border-accent/40 hover:text-foreground"
+            }`}
+          >
+            <Ticket className="w-7 h-7" />
+            All Events
+          </button>
 
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between">
-          <div className="flex items-start justify-between mb-8">
-            <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center">
-              <Activity className="w-6 h-6 text-foreground" />
-            </div>
-          </div>
-          <div>
-             <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-1">Avg Fill Rate</p>
-             <p className="text-4xl font-black tracking-tighter">{overallFillRate.toFixed(1)}%</p>
-             <div className="w-full bg-secondary h-2 rounded-full mt-4 overflow-hidden">
-               <div className="bg-accent h-full rounded-full" style={{ width: `${overallFillRate}%` }} />
-             </div>
-          </div>
+          {events.map(event => (
+            <button
+              key={event.id}
+              onClick={() => setSelectedEventId(event.id)}
+              className={`shrink-0 w-44 h-28 rounded-2xl relative overflow-hidden border-2 transition-all duration-200 ${
+                selectedEventId === event.id
+                  ? "border-accent scale-105 shadow-lg"
+                  : "border-transparent hover:border-border"
+              }`}
+            >
+              <img src={event.imageUrl} alt={event.title} className="absolute inset-0 w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              <p className="absolute bottom-3 left-3 right-3 text-white font-bold text-xs text-left line-clamp-2 leading-snug">
+                {event.title}
+              </p>
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="flex flex-col xl:flex-row gap-12">
-        {/* Left Col: Event Tiers */}
-        <div className="xl:w-2/3">
-           <h2 className="text-xl font-bold mb-6">Event Performance</h2>
-           <div className="space-y-6">
-             {eventsWithTickets.map(event => (
-                <div key={event.id} className="bg-card border border-border rounded-2xl p-6">
-                   <div className="flex items-center justify-between mb-8 pb-6 border-b border-border/50">
-                     <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm">
-                           <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover" />
-                        </div>
-                        <div>
-                          <p className="font-bold text-lg leading-tight mb-1">{event.title}</p>
-                          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{new Date(event.date).toLocaleDateString()}</p>
-                        </div>
-                     </div>
-                     <div className="text-right">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Generated</p>
-                        <p className="text-2xl font-black tracking-tight">${event.metrics.eventRevenue.toLocaleString()}</p>
-                     </div>
-                   </div>
+      {/* Search & Filter Bar */}
+      <div className="flex flex-col sm:flex-row gap-3 px-8 lg:px-12">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search by name, ticket number…"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="w-full h-11 pl-11 pr-4 rounded-xl border border-border bg-card text-foreground text-sm font-medium placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent transition-all"
+          />
+        </div>
 
-                   <div className="space-y-5">
-                     {event.ticketTiers && event.ticketTiers.length > 0 ? event.ticketTiers.map(tier => {
-                       const tierFill = tier.totalQuantity > 0 ? (tier.soldQuantity / tier.totalQuantity) * 100 : 0;
-                       return (
-                         <div key={tier.id}>
-                           <div className="flex justify-between items-end mb-2 text-sm font-medium">
-                              <p>{tier.name} <span className="opacity-50 ml-1">(${tier.price})</span></p>
-                              <p className="font-bold">{tier.soldQuantity} <span className="text-muted-foreground text-xs font-normal">/ {tier.totalQuantity}</span></p>
-                           </div>
-                           <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
-                              <div 
-                                className={`h-full rounded-full transition-all duration-1000 ${tierFill >= 100 ? 'bg-emerald-500' : 'bg-foreground'}`} 
-                                style={{ width: `${tierFill}%` }} 
-                              />
-                           </div>
-                         </div>
-                       )
-                     }) : (
-                        <p className="text-sm text-muted-foreground italic">No ticket tiers configured for this event.</p>
-                     )}
-                   </div>
+        <div className="relative sm:w-64">
+          <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none z-10" />
+          <select
+            value={selectedEventId}
+            onChange={e => setSelectedEventId(e.target.value)}
+            className="w-full h-11 pl-11 pr-10 rounded-xl border border-border bg-card text-foreground text-sm font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-accent transition-all cursor-pointer"
+          >
+            <option value="all">All Events</option>
+            {events.map(e => <option key={e.id} value={e.id}>{e.title}</option>)}
+          </select>
+          <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-[700px]">
+          <thead className="border-b border-border">
+            <tr>
+              {["#", "Ticket No.", "Customer", "Event", "Date", "Actions"].map((h, i) => (
+                <th
+                  key={h}
+                  className={`px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground ${i === 5 ? "text-right" : "text-left"} ${i === 0 ? "w-12" : ""}`}
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredOrders.length > 0 ? filteredOrders.map((order, i) => (
+              <tr
+                key={order.id}
+                className="border-b border-border/40 last:border-0 transition-all duration-150 group relative hover:bg-accent/5 hover:border-accent/20"
+              >
+                <td className="px-6 py-4 text-xs text-muted-foreground font-bold">{i + 1}</td>
+                <td className="px-6 py-4">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-accent/10 text-accent text-xs font-black group-hover:bg-accent group-hover:text-black transition-colors">
+                    {order.ticketNumber}
+                  </span>
+                </td>
+                <td className="px-6 py-4 font-semibold text-foreground">{order.username}</td>
+                <td className="px-6 py-4">
+                  <p className="font-semibold text-foreground leading-tight line-clamp-1">{order.eventName}</p>
+                  <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider mt-0.5">{order.tier}</p>
+                </td>
+                <td className="px-6 py-4 text-muted-foreground">{order.date}</td>
+                <td className="px-6 py-4">
+                  <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:bg-accent hover:text-black" onClick={() => setViewingOrder(order)} title="View">
+                      <Eye className="w-3.5 h-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:bg-blue-500/10 hover:text-blue-500" title="Edit">
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:bg-destructive/10 hover:text-destructive" onClick={() => handleDelete(order.id)} title="Delete">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            )) : (
+              <tr>
+                <td colSpan={6} className="px-6 py-24 text-center">
+                  <Ticket className="w-10 h-10 mx-auto mb-3 text-muted-foreground opacity-20" />
+                  <p className="text-muted-foreground text-sm font-medium">No tickets found.</p>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* View Modal */}
+      {viewingOrder && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-md"
+          onClick={e => { if (e.target === e.currentTarget) setViewingOrder(null) }}
+        >
+          <div className="bg-card w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border border-border">
+
+            {/* Accent Header */}
+            <div className="bg-accent p-8 relative text-black">
+              <button
+                onClick={() => setViewingOrder(null)}
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <p className="text-[10px] font-black uppercase tracking-widest opacity-50 mb-2">Admit One</p>
+              <p className="text-4xl font-black tracking-tighter">{viewingOrder.ticketNumber}</p>
+            </div>
+
+            {/* Perforation Line */}
+            <div className="relative h-6 bg-accent">
+              <div className="absolute top-1/2 left-6 right-6 border-t-2 border-dashed border-black/20 -translate-y-1/2" />
+              <div className="absolute left-[-12px] top-0 w-6 h-6 rounded-full bg-background" />
+              <div className="absolute right-[-12px] top-0 w-6 h-6 rounded-full bg-background" />
+            </div>
+
+            {/* Body */}
+            <div className="p-8 space-y-5">
+              <div className="grid grid-cols-2 gap-5">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Customer</p>
+                  <p className="font-bold text-sm">{viewingOrder.username}</p>
                 </div>
-             ))}
-           </div>
-        </div>
-
-        {/* Right Col: Recent Sales */}
-        <div className="xl:w-1/3">
-           <div className="sticky top-12">
-             <h2 className="text-xl font-bold mb-6">Recent Sales</h2>
-             <div className="bg-card border border-border rounded-2xl p-6">
-                <div className="space-y-6">
-                  {[
-                    { id: 1, name: "Alexander K.", amount: 240, time: "2 mins ago", tier: "VIP Floor" },
-                    { id: 2, name: "Sarah M.", amount: 65, time: "18 mins ago", tier: "General Admission" },
-                    { id: 3, name: "Michael T.", amount: 150, time: "1 hour ago", tier: "Grand Circle" },
-                    { id: 4, name: "Emma H.", amount: 130, time: "3 hours ago", tier: "Premium" },
-                    { id: 5, name: "David L.", amount: 250, time: "5 hours ago", tier: "Backstage Pass" },
-                  ].map((sale) => (
-                    <div key={sale.id} className="flex items-center gap-4">
-                       <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center shrink-0">
-                         <span className="text-xs font-black">{sale.name.charAt(0)}</span>
-                       </div>
-                       <div className="flex-1 min-w-0">
-                         <p className="text-sm font-bold truncate">{sale.name} <span className="font-medium text-muted-foreground ml-1">bought tickets</span></p>
-                         <p className="text-xs text-muted-foreground truncate">{sale.tier}</p>
-                       </div>
-                       <div className="text-right">
-                         <p className="text-sm font-black">+${sale.amount}</p>
-                         <p className="text-[10px] text-muted-foreground font-medium">{sale.time}</p>
-                       </div>
-                    </div>
-                  ))}
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Tier</p>
+                  <p className="font-bold text-sm">{viewingOrder.tier}</p>
                 </div>
-                <button className="w-full mt-8 py-3 rounded-xl border border-border text-sm font-bold hover:bg-secondary transition-colors">
-                  View All Transactions
-                </button>
-             </div>
-           </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Price Paid</p>
+                  <p className="font-bold text-sm">${viewingOrder.price.toFixed(2)}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Date</p>
+                  <p className="font-bold text-sm">{viewingOrder.date}</p>
+                </div>
+              </div>
+              <div className="pt-4 border-t border-border/50">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Event</p>
+                <p className="font-bold text-base">{viewingOrder.eventName}</p>
+              </div>
+              <Button
+                className="w-full h-12 rounded-xl font-bold bg-accent text-black hover:brightness-105"
+                onClick={() => setViewingOrder(null)}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
