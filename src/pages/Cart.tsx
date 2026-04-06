@@ -1,14 +1,14 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { useAppContext } from "@/context/AppContext"
 import { Link } from "react-router-dom"
-import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, Ticket } from "lucide-react"
+import { ShoppingCart, Plus, Minus, ArrowRight, Ticket } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function CartPage() {
   const { cartItems, removeTicketFromCart, addTicketToCart, clearCart, cartTotal, cartCount } = useAppContext();
 
   return (
-    <div className="container mx-auto px-4 py-12 flex-1 max-w-5xl">
+    <div className="container mx-auto px-4 pt-24 pb-12 flex-1 max-w-5xl">
       {/* Header */}
       <div className="flex items-center justify-between mb-10">
         <div>
@@ -59,70 +59,81 @@ export default function CartPage() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20, height: 0, marginBottom: 0 }}
                     transition={{ duration: 0.3, delay: i * 0.05 }}
-                    className="flex gap-4 p-4 rounded-2xl border border-border bg-card"
+                    className="flex relative rounded-2xl bg-accent text-accent-foreground overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                   >
-                    {/* Thumbnail */}
-                    <div className="w-24 h-24 rounded-xl overflow-hidden shrink-0">
-                      <img
-                        src={item.event.imageUrl}
-                        alt={item.event.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex gap-1.5 mb-1">
-                        {item.event.tags.slice(0, 1).map((tag) => (
-                          <span
-                            key={tag}
-                            className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase"
-                            style={{ backgroundColor: "#bced09", color: "#100c08" }}
-                          >
-                            {tag}
-                          </span>
-                        ))}
+                    {/* Main content (left) */}
+                    <div className="flex-1 p-4 sm:p-5 flex flex-col sm:flex-row gap-4 sm:gap-6">
+                      {/* Thumbnail */}
+                      <div className="w-20 sm:w-28 h-20 sm:h-28 rounded-xl overflow-hidden shrink-0 shadow-sm border border-black/5">
+                        <img
+                          src={item.event.imageUrl}
+                          alt={item.event.title}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <Link to={`/events/${item.event.id}`}>
-                        <h3 className="font-bold text-base leading-tight line-clamp-1 hover:underline">{item.event.title}</h3>
-                      </Link>
-                      <p className="text-muted-foreground text-sm mt-1">
-                        {eventDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })} · {item.event.location}
-                      </p>
-                      <div className="flex items-center gap-1 mt-0.5">
-                        <Ticket className="w-3.5 h-3.5 text-muted-foreground" />
-                        <p className="text-muted-foreground text-xs">
-                          Added {new Date(item.purchasedAt).toLocaleDateString()}
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0 flex flex-col justify-center">
+                        <div className="flex gap-1.5 mb-2">
+                          {item.event.tags.slice(0, 1).map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-black/10 text-black mix-blend-color-burn"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                        <Link to={`/events/${item.event.id}`}>
+                          <h3 className="font-bold text-lg sm:text-xl leading-tight line-clamp-1 hover:underline text-black">{item.event.title}</h3>
+                        </Link>
+                        <p className="text-black/70 text-sm mt-1 font-medium">
+                          {eventDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })} · {item.event.location}
                         </p>
+                        <div className="flex items-center gap-1.5 mt-2 opacity-60">
+                          <Ticket className="w-3.5 h-3.5 text-black" />
+                          <p className="text-black text-[11px] font-semibold uppercase tracking-wider">
+                            Added {new Date(item.purchasedAt).toLocaleDateString()}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Quantity + Price */}
-                    <div className="flex flex-col items-end justify-between shrink-0">
-                      <button
-                        onClick={() => removeTicketFromCart(item.cartItemId)}
-                        className="text-muted-foreground hover:text-destructive transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 border border-border rounded-full px-2 py-1">
+                    {/* Stub (right) */}
+                    <div className="w-28 sm:w-40 shrink-0 flex flex-col items-center justify-center p-4 relative bg-black/5">
+                        {/* Perforation Line & Cutouts */}
+                        <div className="absolute left-0 top-0 bottom-0 flex flex-col items-center">
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-background z-10 shadow-inner" />
+                            <div className="w-px h-full border-l-[2.5px] border-dashed border-black/20" />
+                            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-background z-10 shadow-inner" />
+                        </div>
+
+                        <div className="font-black text-xl sm:text-2xl tracking-tighter mb-4 text-black text-center w-full">
+                           ${(item.event.price * item.quantity).toFixed(2)}
+                        </div>
+                        
+                        <div className="flex items-center gap-2 sm:gap-3 bg-black/10 rounded-full px-2 py-1.5 mb-3 shadow-inner">
                           <button
                             onClick={() => removeTicketFromCart(item.cartItemId)}
-                            className="w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground"
+                            className="w-6 h-6 flex items-center justify-center text-black/60 hover:text-black rounded-full hover:bg-black/10 transition-colors"
                           >
-                            <Minus className="w-3 h-3" />
+                            <Minus className="w-3.5 h-3.5 font-bold" />
                           </button>
-                          <span className="text-sm font-semibold w-4 text-center">{item.quantity}</span>
+                          <span className="text-sm font-bold w-4 text-center text-black">{item.quantity}</span>
                           <button
                             onClick={() => addTicketToCart(item.event, 1)}
-                            className="w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground"
+                            className="w-6 h-6 flex items-center justify-center text-black/60 hover:text-black rounded-full hover:bg-black/10 transition-colors"
                           >
-                            <Plus className="w-3 h-3" />
+                            <Plus className="w-3.5 h-3.5 font-bold" />
                           </button>
                         </div>
-                        <span className="font-bold text-base w-16 text-right">${(item.event.price * item.quantity).toFixed(2)}</span>
-                      </div>
+
+                        <button
+                          onClick={() => removeTicketFromCart(item.cartItemId)}
+                          className="text-black/40 hover:text-red-700 transition-colors text-[9px] font-bold uppercase tracking-widest flex items-center justify-center w-full py-1"
+                        >
+                           Remove
+                        </button>
                     </div>
                   </motion.div>
                 );
