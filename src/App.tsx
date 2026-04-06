@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { AppProvider } from "@/context/AppContext"
 import { ThemeProvider } from "@/context/ThemeContext"
 import AppLayout from "@/components/layout/AppLayout"
+import AdminLayout from "@/components/layout/AdminLayout"
 
 // Pages
 import Home from "@/pages/Home"
@@ -22,6 +23,7 @@ function App() {
       <AppProvider>
         <Router>
           <Routes>
+            {/* Public/Main App Routes */}
             <Route element={<AppLayout />}>
               <Route path="/" element={<Home />} />
               <Route path="/events" element={<AllEvents />} />
@@ -30,11 +32,15 @@ function App() {
               <Route path="/artists/:id" element={<ArtistDetail />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/auth/signin" element={<SignIn />} />
+              <Route path="/auth/signup" element={<SignUp />} />
+            </Route>
+
+            {/* Admin Dashboard Routes */}
+            <Route element={<AdminLayout />}>
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/events/new" element={<EventFormPage />} />
               <Route path="/admin/events/edit/:id" element={<EventFormPage />} />
-              <Route path="/auth/signin" element={<SignIn />} />
-              <Route path="/auth/signup" element={<SignUp />} />
             </Route>
           </Routes>
         </Router>

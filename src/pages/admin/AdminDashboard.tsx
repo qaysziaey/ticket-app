@@ -21,8 +21,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="flex-1 relative bg-background">
-      <div className="container mx-auto px-4 py-12">
+    <div className="flex-1 relative bg-background p-8 lg:p-12">
         {/* ── Header ── */}
         <div className="flex flex-wrap justify-between items-end gap-6 mb-12">
           <div>
@@ -136,7 +135,6 @@ export default function AdminDashboard() {
             </table>
           </div>
         </div>
-      </div>
     </div>
   );
 }
