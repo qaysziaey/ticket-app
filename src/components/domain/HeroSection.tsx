@@ -1,17 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Search, MapPin, Calendar } from "lucide-react"
 import { useAppContext } from "@/context/AppContext"
-import { useTheme } from "@/context/ThemeContext"
 
 import { useNavigate } from "react-router-dom"
 import { cn } from "@/lib/utils"
-
-const slideVariants = {
-  enter: (dir: number) => ({ x: dir > 0 ? "100%" : "-100%", opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir: number) => ({ x: dir < 0 ? "100%" : "-100%", opacity: 0 }),
-};
 
 /* ── Custom Date Picker ─────────────────────────────────── */
 function CustomDatePicker({ date, setDate }: { date: string; setDate: (d: string) => void }) {
@@ -75,7 +68,7 @@ function CustomDatePicker({ date, setDate }: { date: string; setDate: (d: string
 }
 
 /* ── Hero Search Bar ───────────────────────────────────── */
-function HeroSearchBar() {
+export function HeroSearchBar() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
@@ -148,114 +141,38 @@ function HeroSearchBar() {
   );
 }
 
-/* ── Main Hero ─────────────────────────────────────────── */
+import EventCard from "@/components/domain/EventCard"
+
 export default function HeroSection() {
   const { events } = useAppContext();
-  const { theme } = useTheme();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const isLight = theme === "light";
-  const heroEvents = events.slice(0, 5);
-
-  const goTo = useCallback((index: number, dir: number) => {
-    setDirection(dir);
-    setActiveIndex(index);
-  }, []);
-
-  const goNext = useCallback(() => {
-    const next = (activeIndex + 1) % heroEvents.length;
-    goTo(next, 1);
-  }, [activeIndex, heroEvents.length, goTo]);
-
-  useEffect(() => {
-    if (isPaused || heroEvents.length <= 1) return;
-    const timer = setInterval(goNext, 5000);
-    return () => clearInterval(timer);
-  }, [goNext, isPaused, heroEvents.length]);
-
-  if (heroEvents.length === 0) return null;
-  const activeEvent = heroEvents[activeIndex];
+  
+  // Create a continuous loop array
+  const scrollEvents = events.slice(0, 10);
+  const marqueeEvents = [...scrollEvents, ...scrollEvents, ...scrollEvents];
 
   return (
-    <section
-      className="relative w-full overflow-hidden"
-      style={{ minHeight: "250px", height: "40vh" }}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-    >
-      {/* Sliding background */}
-      <AnimatePresence custom={direction} initial={false}>
-        <motion.div
-          key={activeIndex}
-          custom={direction}
-          variants={slideVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: 0.75, ease: [0.76, 0, 0.24, 1] }}
-          className="absolute inset-0"
-        >
-          <img src={activeEvent.imageUrl} alt={activeEvent.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-        </motion.div>
-      </AnimatePresence>
+    <section className="relative w-full overflow-hidden bg-background py-6">
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(calc(-100% / 3)); }
+        }
+        .marquee-track {
+          display: flex;
+          gap: 6px;
+          width: max-content;
+          animation: marquee 40s linear infinite;
+        }
+        .marquee-track:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
       
-      {/* Subtle light overlay for dark text in light mode */}
-      {isLight && <div className="absolute inset-0 bg-white/20 pointer-events-none" />}
-
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center pt-10 md:pt-14 px-4" style={{ minHeight: "250px", height: "100%" }}>
-        <motion.div
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55 }}
-          className="text-center"
-        >
-          <p className="text-xs font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: "#bced09" }}>
-            Live experiences, curated for you
-          </p>
-          {/* Font weight 500 (medium) as requested */}
-          <h1 className={cn(
-            "text-4xl md:text-6xl lg:text-7xl font-medium tracking-tight whitespace-nowrap",
-            isLight ? "text-foreground" : "text-white"
-          )}>
-            Find Your Next&nbsp;
-            <span className="font-black" style={{ color: "#bced09" }}>Experience.</span>
-          </h1>
-          <p className={cn(
-            "text-base md:text-lg mt-3 font-light",
-            isLight ? "text-muted-foreground" : "text-white/50"
-          )}>
-            Concerts · Festivals · Shows · Theater — all in one place.
-          </p>
-        </motion.div>
-
-        {/* Search bar */}
-        <HeroSearchBar />
-
-        {/* Event info (simplified/moved up) */}
-        <div className="absolute inset-x-0 bottom-8 flex justify-center text-center opacity-60 font-medium text-xs tracking-widest uppercase">
-           Scroll for events
-        </div>
-
-      </div>
-
-      {/* Dots only, no arrows */}
-      <div className="absolute bottom-6 right-8 z-20 flex gap-2 items-center">
-        {heroEvents.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => goTo(i, i > activeIndex ? 1 : -1)}
-            className="transition-all duration-300 rounded-full"
-            style={{
-              width: i === activeIndex ? "24px" : "6px",
-              height: "6px",
-              backgroundColor: i === activeIndex ? "#bced09" : "rgba(255,255,255,0.3)",
-            }}
-          />
+      <div className="marquee-track px-[3px]">
+        {marqueeEvents.map((event, i) => (
+          <div key={`${event.id}-${i}`} className="w-[300px] sm:w-[350px] shrink-0">
+            <EventCard event={event} index={i} />
+          </div>
         ))}
       </div>
     </section>

@@ -2,7 +2,7 @@ import { motion } from "framer-motion"
 import { useAppContext } from "@/context/AppContext"
 import EventCard from "@/components/domain/EventCard"
 import ArtistCard from "@/components/domain/ArtistCard"
-import HeroSection from "@/components/domain/HeroSection"
+import HeroSection, { HeroSearchBar } from "@/components/domain/HeroSection"
 import { mockArtists } from "@/data/mockData"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
@@ -106,14 +106,19 @@ function CategoryPills() {
 export default function Home() {
   const { events } = useAppContext()
 
-  const recentEvents = events.slice(0, 4)
-  const featuredEvents = events.slice(0, 4)
-  const concertEvents = events.filter((e) => e.type === "Concert").slice(0, 4)
+  const recentEvents = events.slice(0, 5)
+  const featuredEvents = events.slice(0, 5)
+  const concertEvents = events.filter((e) => e.type === "Concert").slice(0, 5)
 
   return (
     <div className="flex flex-col">
-      {/* Hero with slideshow */}
+      {/* Hero with marquee */}
       <HeroSection />
+
+      {/* ── Search Bar bottom of hero ── */}
+      <section className="bg-background pt-4 pb-8 border-b">
+        <HeroSearchBar />
+      </section>
 
       {/* ── Categories strip ── */}
       <section className="py-8 bg-background">
@@ -131,7 +136,7 @@ export default function Home() {
             subtitle="Curated concerts and shows you shouldn't miss"
             linkTo="/events"
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[6px]">
             {featuredEvents.map((event, i) => (
               <EventCard key={event.id} event={event} index={i} variant="featured" />
             ))}
@@ -148,7 +153,7 @@ export default function Home() {
             subtitle="The latest events added to our platform"
             linkTo="/events"
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[6px]">
             {recentEvents.map((event, i) => (
               <EventCard key={event.id} event={event} index={i} />
             ))}
@@ -165,8 +170,8 @@ export default function Home() {
             linkTo="/artists"
             linkLabel="All Artists"
           />
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
-            {mockArtists.slice(0, 4).map((artist, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[6px]">
+            {mockArtists.slice(0, 5).map((artist, i) => (
               <ArtistCard key={artist.id} artist={artist} index={i} variant="card" />
             ))}
           </div>
@@ -182,7 +187,7 @@ export default function Home() {
               title="Concerts Near You"
               subtitle="Feel the beat, live"
             />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[6px]">
               {concertEvents.map((event, i) => (
                 <EventCard key={event.id} event={event} index={i} />
               ))}
