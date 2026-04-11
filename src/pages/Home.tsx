@@ -116,12 +116,12 @@ export default function Home() {
       <HeroSection />
 
       {/* ── Search Bar bottom of hero ── */}
-      <section className="bg-background pt-4 pb-8 border-b">
+      <section className="bg-background pt-8 pb-4">
         <HeroSearchBar />
       </section>
 
       {/* ── Categories strip ── */}
-      <section className="py-8 bg-background">
+      <section className="pt-2 pb-8 bg-background">
         <div className="container mx-auto px-4">
           <CategoryPills />
         </div>

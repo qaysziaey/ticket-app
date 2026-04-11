@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Search, MapPin, Calendar } from "lucide-react"
 import { useAppContext } from "@/context/AppContext"
+import { AppEvent } from "@/data/mockData"
 
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
 
 /* ── Custom Date Picker ─────────────────────────────────── */
@@ -141,39 +142,70 @@ export function HeroSearchBar() {
   );
 }
 
-import EventCard from "@/components/domain/EventCard"
+// Custom card for the dense grid without borders
+function HeroEventCard({ event }: { event: AppEvent }) {
+  return (
+    <Link to={`/events/${event.id}`} className="block relative group overflow-hidden w-[240px] sm:w-[320px] h-[160px] sm:h-[200px] shrink-0 border-0 rounded-none bg-muted">
+      <img src={event.imageUrl} alt={event.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+      <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center p-6 text-center">
+        <h3 className="text-white font-medium text-lg sm:text-xl tracking-tight mb-2 leading-tight">
+          {event.title}
+        </h3>
+        {event.description && (
+          <p className="text-white/70 text-xs sm:text-sm line-clamp-3 leading-relaxed">
+            {event.description}
+          </p>
+        )}
+      </div>
+    </Link>
+  );
+}
 
 export default function HeroSection() {
   const { events } = useAppContext();
   
-  // Create a continuous loop array
-  const scrollEvents = events.slice(0, 10);
-  const marqueeEvents = [...scrollEvents, ...scrollEvents, ...scrollEvents];
+  // Create continuous loop arrays
+  const scrollEvents1 = events.slice(0, 8);
+  const scrollEvents2 = events.slice(8, 16).length > 0 ? events.slice(8, 16) : events.slice(0, 8).reverse();
+  const marqueeEvents1 = [...scrollEvents1, ...scrollEvents1, ...scrollEvents1];
+  const marqueeEvents2 = [...scrollEvents2, ...scrollEvents2, ...scrollEvents2];
 
   return (
-    <section className="relative w-full overflow-hidden bg-background py-6">
+    <section className="relative w-full overflow-hidden bg-background pt-20 pb-0">
       <style>{`
         @keyframes marquee {
           0% { transform: translateX(0%); }
           100% { transform: translateX(calc(-100% / 3)); }
         }
+        @keyframes marqueeReverse {
+          0% { transform: translateX(calc(-100% / 3)); }
+          100% { transform: translateX(0%); }
+        }
         .marquee-track {
           display: flex;
-          gap: 6px;
+          gap: 0;
           width: max-content;
-          animation: marquee 40s linear infinite;
+          animation: marquee 50s linear infinite;
         }
-        .marquee-track:hover {
+        .marquee-track.reverse {
+          animation: marqueeReverse 50s linear infinite;
+        }
+        .marquee-container:hover .marquee-track {
           animation-play-state: paused;
         }
       `}</style>
       
-      <div className="marquee-track px-[3px]">
-        {marqueeEvents.map((event, i) => (
-          <div key={`${event.id}-${i}`} className="w-[300px] sm:w-[350px] shrink-0">
-            <EventCard event={event} index={i} />
-          </div>
-        ))}
+      <div className="marquee-container flex flex-col gap-0">
+        <div className="marquee-track">
+          {marqueeEvents1.map((event, i) => (
+            <HeroEventCard key={`row1-${event.id}-${i}`} event={event} />
+          ))}
+        </div>
+        <div className="marquee-track reverse">
+          {marqueeEvents2.map((event, i) => (
+            <HeroEventCard key={`row2-${event.id}-${i}`} event={event} />
+          ))}
+        </div>
       </div>
     </section>
   );
