@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Search, MapPin, Calendar } from "lucide-react"
 import { useAppContext } from "@/context/AppContext"
 import { useTheme } from "@/context/ThemeContext"
-import { AppEvent } from "@/data/mockData"
-import { Link, useNavigate } from "react-router-dom"
+
+import { useNavigate } from "react-router-dom"
 import { cn } from "@/lib/utils"
 
 const slideVariants = {
@@ -148,63 +148,6 @@ function HeroSearchBar() {
   );
 }
 
-/* ── Slide event info overlay ──────────────────────────── */
-function SlideInfoCard({ event }: { event: AppEvent }) {
-  const { theme } = useTheme();
-  const eventDate = new Date(event.date);
-  const isLight = theme === "light";
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 16 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="absolute bottom-0 left-0 right-0 p-8 md:p-12"
-    >
-      <div className="max-w-2xl">
-        <div className="flex gap-2 mb-3 flex-wrap">
-          {event.tags.slice(0, 2).map((tag) => (
-            <span key={tag} className={cn(
-              "px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide border",
-              isLight 
-                ? "bg-secondary text-foreground border-border" 
-                : "bg-white/10 backdrop-blur-md border-white/20 text-white"
-            )}>
-              {tag}
-            </span>
-          ))}
-        </div>
-        <h2 className={cn(
-          "text-2xl md:text-3xl lg:text-4xl font-medium leading-tight mb-3 tracking-tight",
-          isLight ? "text-foreground" : "text-white"
-        )}>
-          {event.title}
-        </h2>
-        <div className={cn(
-          "flex flex-wrap gap-4 text-sm mb-5 font-medium",
-          isLight ? "text-muted-foreground" : "text-white/70"
-        )}>
-          <span className="flex items-center gap-1.5 opacity-80">
-            <Calendar className="w-3.5 h-3.5" />
-            {eventDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
-          </span>
-          <span className="flex items-center gap-1.5 opacity-80">
-            <MapPin className="w-3.5 h-3.5" />
-            {event.location}, {event.country}
-          </span>
-        </div>
-        <Link to={`/events/${event.id}`}>
-          <button className="rounded-full px-8 py-3.5 font-medium text-xs uppercase tracking-widest transition-all hover:brightness-110 active:scale-95"
-            style={{ backgroundColor: "#bced09", color: "#100c08" }}>
-            Get Tickets — from ${event.price}
-          </button>
-        </Link>
-      </div>
-    </motion.div>
-  );
-}
-
 /* ── Main Hero ─────────────────────────────────────────── */
 export default function HeroSection() {
   const { events } = useAppContext();
@@ -238,7 +181,7 @@ export default function HeroSection() {
   return (
     <section
       className="relative w-full overflow-hidden"
-      style={{ minHeight: "88vh" }}
+      style={{ minHeight: "250px", height: "40vh" }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -264,7 +207,7 @@ export default function HeroSection() {
       {isLight && <div className="absolute inset-0 bg-white/20 pointer-events-none" />}
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center pt-16 md:pt-20 px-4" style={{ minHeight: "88vh" }}>
+      <div className="relative z-10 flex flex-col items-center pt-10 md:pt-14 px-4" style={{ minHeight: "250px", height: "100%" }}>
         <motion.div
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -293,12 +236,11 @@ export default function HeroSection() {
         {/* Search bar */}
         <HeroSearchBar />
 
-        {/* Event info */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <AnimatePresence mode="wait">
-            <SlideInfoCard key={activeIndex} event={activeEvent} />
-          </AnimatePresence>
+        {/* Event info (simplified/moved up) */}
+        <div className="absolute inset-x-0 bottom-8 flex justify-center text-center opacity-60 font-medium text-xs tracking-widest uppercase">
+           Scroll for events
         </div>
+
       </div>
 
       {/* Dots only, no arrows */}
