@@ -59,7 +59,7 @@ export default function EventCard({ event, index = 0, variant = "default" }: Eve
           {/* Bottom content */}
           <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 flex flex-col gap-5">
             <div>
-              <h3 className="text-white font-bold text-[24px] leading-tight tracking-tight mb-2 uppercase">{event.title}</h3>
+              <h3 className="text-white font-bold text-[16px] leading-tight tracking-tight mb-2 uppercase">{event.title}</h3>
               <p className="text-white/60 text-xs sm:text-sm line-clamp-2 max-w-[95%]">
                 {event.description || "Join us for an unforgettable experience featuring world-class performance and energy."}
               </p>
@@ -130,7 +130,7 @@ export default function EventCard({ event, index = 0, variant = "default" }: Eve
         <div className="p-4 flex flex-col flex-1">
           <div className="flex-1">
              <div className="flex justify-between items-start gap-4 mb-2.5">
-                <h3 className="font-bold text-[24px] tracking-tight leading-tight uppercase group-hover:text-accent-foreground transition-colors">
+                <h3 className="font-bold text-[16px] tracking-tight leading-tight uppercase group-hover:text-accent-foreground transition-colors">
                   {event.title}
                 </h3>
                 <button 

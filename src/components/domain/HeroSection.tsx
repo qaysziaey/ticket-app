@@ -148,7 +148,7 @@ function HeroEventCard({ event }: { event: AppEvent }) {
     <Link to={`/events/${event.id}`} className="block relative group overflow-hidden w-[240px] sm:w-[320px] h-[160px] sm:h-[200px] shrink-0 border-0 rounded-none bg-muted">
       <img src={event.imageUrl} alt={event.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
       <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center p-6 text-center">
-        <h3 className="text-white font-medium text-[24px] tracking-tight mb-2 leading-tight">
+        <h3 className="text-white font-medium text-[16px] tracking-tight mb-2 leading-tight">
           {event.title}
         </h3>
         {event.description && (
