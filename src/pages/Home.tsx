@@ -138,7 +138,7 @@ export default function Home() {
           />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[6px]">
             {featuredEvents.map((event, i) => (
-              <EventCard key={event.id} event={event} index={i} variant="featured" />
+              <EventCard key={event.id} event={event} index={i} />
             ))}
           </div>
         </div>
